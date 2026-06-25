@@ -9,6 +9,9 @@ fuentes_espana.js
 images/*.jpg
 images/*_temp*
 
+# Contador de fotos (generado por server.js, no disponible en GitHub Pages)
+photo_counts.js
+
 # Archivos comprimidos y respaldos
 *.zip
 *_old.zip

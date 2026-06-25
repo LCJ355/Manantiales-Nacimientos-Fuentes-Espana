@@ -3,7 +3,7 @@ const URLS = [
   'index.html', 'style.css', 'main.js',
   'manifest.json', 'lib/leaflet.js', 'lib/leaflet.css',
   'lib/leaflet.markercluster.js', 'lib/MarkerCluster.css', 'lib/MarkerCluster.Default.css',
-  'osm_drinking_water.json', 'data/index.json', 'photo_counts.js',
+  'osm_drinking_water.json', 'data/index.json',
 ];
 const TILE_CACHE = 'osm-tiles-v1';
 const MAX_TILES = 2000;

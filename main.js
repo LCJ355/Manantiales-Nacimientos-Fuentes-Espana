@@ -1091,9 +1091,7 @@ async function showModal(d) {
   if (maxPhotos > 0) {
     const thumbsArray = [];
     for (let n = 1; n <= maxPhotos; n++) {
-      const onerrorAttr = useFallbackOnError
-        ? ` onerror="this.style.display='none';this.classList.add('missing-thumb')"`
-        : '';
+      const onerrorAttr = ` onerror="this.style.display='none';this.classList.add('missing-thumb')"`;
       thumbsArray.push(
         `<div class="gal-thumb-wrap">
           <img src="images/cf_${id}_${n}.jpg" ${onerrorAttr}
@@ -1105,9 +1103,7 @@ async function showModal(d) {
       );
     }
     thumbs = thumbsArray.join('');
-    const mainOnerror = useFallbackOnError
-      ? ` onerror="this.style.display='none';this.classList.add('missing-main')"`
-      : '';
+    const mainOnerror = ` onerror="this.style.display='none';this.classList.add('missing-main')"`;
     mainPhotoHtml = `
       <button class="gal-arrow gal-prev" onclick="window.__galMove(-1)">&#9664;</button>
       <div class="gal-main-wrap">
