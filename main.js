@@ -12,7 +12,6 @@ const STATE_COMM_KEY = 'fuentes_current_comm';
 const TILE_LAYERS = {
   osm:  { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attr: '&copy; <a href="https://osm.org/copyright">OSM</a>', maxZoom: 19 },
   topo: { url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', attr: '&copy; <a href="https://opentopomap.org">OpenTopoMap</a>', maxZoom: 17 },
-  cyclo: { url: 'https://{s}.tile.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', attr: '&copy; <a href="https://cyclosm.org">CyclOSM</a>', maxZoom: 18, subdomains: ['dev.a', 'dev.b', 'dev.c'] },
   sat:  { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', attr: '&copy; <a href="https://esri.com">Esri</a>', maxZoom: 18 },
 };
 

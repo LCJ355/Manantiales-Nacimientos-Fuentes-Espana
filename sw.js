@@ -38,7 +38,7 @@ self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
 
   // Map tiles -> progressive tile cache
-  const tileHosts = ['tile.openstreetmap.org', 'tile.opentopomap.org', 'tile.openstreetmap.fr', 'server.arcgisonline.com'];
+  const tileHosts = ['tile.openstreetmap.org', 'tile.opentopomap.org', 'server.arcgisonline.com'];
   if (tileHosts.some(h => url.hostname.endsWith(h))) {
     e.respondWith(tileStrategy(e.request));
     return;
