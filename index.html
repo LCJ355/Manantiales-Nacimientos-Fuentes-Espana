@@ -97,12 +97,20 @@
         <section class="map-panel">
             <div id="map" role="application" aria-label="Mapa interactivo de fuentes">
                 <div class="layer-switcher" id="layerSwitcher">
-                    <button class="layer-btn active" data-layer="osm">OSM</button>
-                    <button class="layer-btn" data-layer="topo">Topo</button>
-                    <button class="layer-btn" data-layer="sat">Satélite</button>
+                    <div class="layer-selector">
+                        <button class="layer-btn layer-toggle" id="layerToggle" title="Cambiar capa de mapa">🗺️</button>
+                        <div class="layer-dropdown" id="layerDropdown">
+                            <button class="layer-opt active" data-layer="osm">🗺️ OpenStreetMap</button>
+                            <button class="layer-opt" data-layer="topo">⛰️ Topográfico</button>
+                            <button class="layer-opt" data-layer="cyclo">🚲 CyclOSM</button>
+                            <button class="layer-opt" data-layer="hot">🤝 Humanitario</button>
+                            <button class="layer-opt" data-layer="sat">🛰️ Satélite</button>
+                            <button class="layer-opt" data-layer="topo_esri">🗺️ Topo Esri</button>
+                        </div>
+                    </div>
                     <span class="layer-sep" aria-hidden="true"></span>
                     <button class="layer-btn" id="gpsBtn" title="Centrar en mi ubicación">🎯</button>
-                    <button class="layer-btn" id="downloadTilesBtn" title="Descargar zona offline">💾 Descargar Mapa</button>
+                    <button class="layer-btn" id="downloadTilesBtn" title="Descargar zona offline">💾</button>
                     <button class="layer-btn" id="dwBtn" title="Mostrar fuentes de agua potable (OSM)">🚰</button>
                     <span class="layer-sep" aria-hidden="true"></span>
                     <button class="layer-btn zoom-btn" id="zoomIn" aria-label="Aumentar zoom">+</button>

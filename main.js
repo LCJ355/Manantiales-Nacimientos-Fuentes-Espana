@@ -12,7 +12,10 @@ const STATE_COMM_KEY = 'fuentes_current_comm';
 const TILE_LAYERS = {
   osm:  { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attr: '&copy; <a href="https://osm.org/copyright">OSM</a>', maxZoom: 19 },
   topo: { url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', attr: '&copy; <a href="https://opentopomap.org">OpenTopoMap</a>', maxZoom: 17 },
+  cyclo: { url: 'https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', attr: '&copy; <a href="https://cyclosm.org">CyclOSM</a>', maxZoom: 20 },
+  hot:  { url: 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', attr: '&copy; <a href="https://hotosm.org">HOT</a>', maxZoom: 20 },
   sat:  { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', attr: '&copy; <a href="https://esri.com">Esri</a>', maxZoom: 18 },
+  topo_esri: { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', attr: '&copy; <a href="https://esri.com">Esri Topo</a>', maxZoom: 18 },
 };
 
 const CUENCA_COLORS = {
@@ -665,10 +668,18 @@ function initMap() {
     state.renderTimer = setTimeout(renderMap, 150);
   });
 
-  document.querySelectorAll('.layer-btn[data-layer]').forEach(b => b.classList.toggle('active', b.dataset.layer === state.currentLayer));
-  document.querySelectorAll('.layer-btn[data-layer]').forEach(btn => {
+  document.querySelectorAll('.layer-opt').forEach(b => b.classList.toggle('active', b.dataset.layer === state.currentLayer));
+  document.querySelectorAll('.layer-opt').forEach(btn => {
     btn.addEventListener('click', () => setLayer(btn.dataset.layer));
   });
+  const layerToggle = $('layerToggle');
+  const layerDropdown = $('layerDropdown');
+  if (layerToggle && layerDropdown) {
+    layerToggle.onclick = function(e) { e.stopPropagation(); layerDropdown.classList.toggle('open'); };
+    document.addEventListener('click', function(e) {
+      if (!layerDropdown.contains(e.target) && e.target !== layerToggle) layerDropdown.classList.remove('open');
+    });
+  }
   $('zoomIn').onclick = () => state.map.zoomIn();
   $('zoomOut').onclick = () => state.map.zoomOut();
 
@@ -784,7 +795,9 @@ function setLayer(name) {
   if (state.tileLayers[name]) state.tileLayers[name].addTo(state.map);
   state.currentLayer = name;
   localStorage.setItem('map_layer', name);
-  document.querySelectorAll('.layer-btn').forEach(b => b.classList.toggle('active', b.dataset.layer === name));
+  document.querySelectorAll('.layer-opt').forEach(b => b.classList.toggle('active', b.dataset.layer === name));
+  const dd = $('layerDropdown');
+  if (dd) dd.classList.remove('open');
 }
 
 function renderMap() {

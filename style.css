@@ -66,6 +66,12 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--
 .layer-btn:hover{border-color:var(--accent);color:var(--accent)}
 .layer-btn.active{background:linear-gradient(135deg,var(--accent),#0f766e);color:#fff;border-color:transparent}
 #active-card-name{color:var(--accent);font-weight:600}
+.layer-selector{position:relative}
+.layer-dropdown{position:absolute;top:100%;right:0;margin-top:4px;background:var(--panel);border:1px solid var(--border);border-radius:8px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.5);min-width:170px;z-index:1001;display:none}
+.layer-dropdown.open{display:block}
+.layer-opt{display:block;width:100%;text-align:left;background:none;border:none;color:var(--text);padding:6px 10px;font-size:.7rem;cursor:pointer;white-space:nowrap;transition:background .12s,color .12s}
+.layer-opt:hover{background:rgba(13,148,136,.1)}
+.layer-opt.active{background:rgba(13,148,136,.2);color:var(--accent);font-weight:600}
 /* Modal */
 .modal{display:none;position:fixed;z-index:200;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);align-items:flex-start;justify-content:center;padding:20px 10px;overflow-y:auto}
 .modal.show{display:flex}
