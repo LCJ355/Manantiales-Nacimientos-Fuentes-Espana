@@ -7,7 +7,7 @@ const STORE = 'comm_cache';
 const DATA_VER_KEY = 'fuentes_data_ver';
 const DATA_VER = 6;
 const COMM_INDEX_URL = 'data/index.json';
-const LEGACY_URL = 'fuentes_espana.json';
+const LEGACY_URL = 'fuentes_espana.json?v=2';
 const STATE_COMM_KEY = 'fuentes_current_comm';
 const TILE_LAYERS = {
   osm:  { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attr: '&copy; <a href="https://osm.org/copyright">OSM</a>', maxZoom: 19 },
@@ -974,7 +974,7 @@ function fitToMunicipio(muni) {
 
 async function loadDWData() {
   try {
-    const resp = await fetch('osm_drinking_water.json');
+    const resp = await fetch('osm_drinking_water.json?v=2');
     if (!resp.ok) throw new Error('HTTP '+resp.status);
     state.dwData = await resp.json();
     return state.dwData.elements || [];
