@@ -1070,7 +1070,7 @@ async function showModal(d) {
     </div>`;
   }
 
-  // Photo gallery
+  // Photo gallery (only available with local server, not on GitHub Pages)
   const hasPhotoCounts = typeof window.PHOTO_COUNTS !== 'undefined';
   let maxPhotos = 0;
   let useFallbackOnError = false;
@@ -1081,9 +1081,6 @@ async function showModal(d) {
       maxPhotos = 1;
       useFallbackOnError = true;
     }
-  } else {
-    maxPhotos = 5;
-    useFallbackOnError = true;
   }
 
   let mainPhotoHtml = '';
@@ -1127,7 +1124,7 @@ async function showModal(d) {
   }
 
   let descHtml = '';
-  if (desc || maxPhotos > 0 || true) {
+  if (desc || maxPhotos > 0) {
     descHtml = `<div class="modal-desc-img">
       ${maxPhotos > 0 ? `
       <div class="modal-desc-photo">
@@ -1138,12 +1135,14 @@ async function showModal(d) {
       <div class="modal-desc-photo" id="modal-desc-photo-empty" style="display:none">
       </div>
       `}
+      ${hasPhotoCounts ? `
       <div class="gal-toolbar">
         <button class="gal-upload-btn" onclick="document.getElementById('gal-file-input').click()" title="Subir foto(s) — también Ctrl+V">📷 Subir foto</button>
         <input type="file" id="gal-file-input" multiple accept="image/*" style="display:none"
                onchange="window.__galUploadFiles(this.files);this.value=''">
         <span class="gal-srv-status" title="Estado del servidor de fotos"></span>
       </div>
+      ` : ''}
       <div class="modal-desc-text">
         ${desc ? `<div class="desc-label">Descripción</div>
         <div class="desc-value">${esc(desc)}</div>` : ''}
