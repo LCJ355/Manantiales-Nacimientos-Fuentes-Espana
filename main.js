@@ -45,6 +45,7 @@ const state = {
   userCoords: null,
   userMarker: null,
   dwData: null, dwLayer: null, showDW: false,
+  queryMode: false, queryMarker: null,
   lastRenderedSig: null,
 };
 
@@ -682,6 +683,57 @@ function initMap() {
   }
   $('zoomIn').onclick = () => state.map.zoomIn();
   $('zoomOut').onclick = () => state.map.zoomOut();
+
+  $('queryBtn').onclick = () => {
+    state.queryMode = !state.queryMode;
+    $('queryBtn').classList.toggle('active', state.queryMode);
+    state.map.getContainer().style.cursor = state.queryMode ? 'crosshair' : '';
+    if (!state.queryMode && state.queryMarker) {
+      state.map.removeLayer(state.queryMarker);
+      state.queryMarker = null;
+    }
+    showToast(state.queryMode ? 'Modo consulta: haz clic en el mapa' : 'Modo consulta desactivado');
+  };
+
+  state.map.on('click', function(e) {
+    if (!state.queryMode) return;
+    const lat = e.latlng.lat.toFixed(5);
+    const lon = e.latlng.lng.toFixed(5);
+    // Remove old marker
+    if (state.queryMarker) state.map.removeLayer(state.queryMarker);
+    state.queryMarker = L.marker([lat, lon], {
+      icon: L.divIcon({ className: 'query-marker', html: '<div class="qpulse"></div>', iconSize: [20,20], iconAnchor: [10,10] })
+    }).addTo(state.map);
+
+    // Find nearby springs (within 1km)
+    const nearby = [];
+    const data = state.allData.length ? state.allData : (state._allData || []);
+    for (const d of data) {
+      if (d.lat == null || d.lon == null) continue;
+      const dist = getDistance(lat, lon, d.lat, d.lon);
+      if (dist < 1) {
+        nearby.push({ id: d.id_fuente, name: displayName(d), dist: Math.round(dist*1000)+'m', mun: d.municipio, prov: d.provincia });
+      }
+    }
+    nearby.sort((a,b) => a.dist.localeCompare(b.dist));
+
+    const list = nearby.length
+      ? nearby.map(n => `<li><a href="#" onclick="window.selectFuente('${n.id}');return false"><b>${esc(n.name)}</b> <small>${n.dist}</small></a></li>`).join('')
+      : '<li style="color:var(--muted)">Ninguna fuente cercana</li>';
+
+    const html = `<div class="query-popup">
+      <b style="font-size:.85rem">🔍 Consulta</b><br>
+      <small>${lat}, ${lon}</small>
+      <div style="margin:4px 0"><a class="btn btn-sec" href="https://www.openstreetmap.org/query?lat=${lat}&lon=${lon}" target="_blank">🌐 OSM Query</a>
+      <a class="btn btn-sec" href="https://www.google.com/maps?q=${lat},${lon}" target="_blank">🗺️ Maps</a></div>
+      ${nearby.length ? `<div style="font-size:.7rem;color:var(--sub);margin:2px 0">Fuentes cercanas (&lt;1km):</div>
+      <ol style="margin:2px 0 0 12px;font-size:.72rem">${list}</ol>` : ''}
+    </div>`;
+    L.popup({ maxWidth: 300, className: 'query-popup-wrap' })
+      .setLatLng([lat, lon])
+      .setContent(html)
+      .openOn(state.map);
+  });
 
   $('gpsBtn').onclick = () => {
     if (!navigator.geolocation) {
