@@ -1,0 +1,14 @@
+{
+  "name": "fuentes-espana",
+  "version": "2.0.0",
+  "description": "Servidor para la app de fuentes de España con gestión de fotos",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js & start http://localhost:3000"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1"
+  }
+}

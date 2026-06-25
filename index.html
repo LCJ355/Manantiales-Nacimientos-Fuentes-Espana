@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    
+    <!-- SEO Básico -->
+    <title>Fuentes de España | Catálogo de Manantiales y Nacimientos</title>
+    <meta name="description" content="Explora el catálogo interactivo de 118.358 manantiales, fuentes y nacimientos de agua de toda España. Datos precisos y acceso offline.">
+    <meta name="keywords" content="fuentes españa, manantiales, nacimientos de agua, mapa agua españa, hidrografía">
+    
+    <!-- Open Graph / Social Media (Para que se vea bien al compartir) -->
+    <meta property="og:title" content="Fuentes de España - Catálogo Interactivo">
+    <meta property="og:description" content="Descubre más de 118.000 puntos de agua en España en un mapa interactivo.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://tu-dominio.com/og-image.jpg"> <!-- Cambia esto por una imagen real -->
+
+    <!-- Configuración de Apariencia -->
+    <meta name="theme-color" content="#0d1117">
+    <meta name="color-scheme" content="dark">
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
+
+    <!-- Pre-carga de CSS para evitar saltos visuales -->
+    <link rel="stylesheet" href="lib/leaflet.css">
+    <link rel="stylesheet" href="lib/MarkerCluster.css">
+    <link rel="stylesheet" href="lib/MarkerCluster.Default.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Pantalla de Carga optimizada -->
+    <div id="loading" role="status" aria-live="polite">
+        <div class="spinner"></div>
+        <div id="loading-text">Inicializando base de datos...</div>
+    </div>
+
+    <header class="topbar">
+        <div class="topbar-inner">
+            <div class="topbar-brand">
+                <span class="topbar-icon" aria-hidden="true">💧</span>
+                <h1>Fuentes de España</h1>
+                <span class="badge-offline" title="Funciona sin internet">📡 Offline</span>
+            </div>
+            <div class="topbar-stats">
+                <span id="statTotal" aria-label="Total de fuentes">—</span>
+                <span class="stat-sep" aria-hidden="true">·</span>
+                <span id="statFiltered" aria-label="Fuentes filtradas">—</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Barra de Filtros mejorada semánticamente -->
+    <nav class="filter-bar" id="filterBar" aria-label="Filtros de búsqueda">
+        <div class="filter-group">
+            <input type="text" id="textSearch" placeholder="Buscar por nombre..." class="filter-select search-input" aria-label="Buscar fuente por nombre">
+        </div>
+        <div class="filter-group">
+            <button id="favsToggleBtn" class="filter-select fav-toggle-btn" aria-pressed="false" aria-label="Mostrar favoritos">
+                ⭐ <span class="btn-lbl">Favoritos</span>
+            </button>
+        </div>
+        <div class="filter-group">
+            <select id="commSelect" class="filter-select" aria-label="Filtrar por Comunidad Autónoma">
+                <option value="">Comunidad Autónoma</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <select id="provSelect" class="filter-select" aria-label="Filtrar por Provincia">
+                <option value="">Provincia</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <select id="muniSelect" class="filter-select" aria-label="Filtrar por Municipio">
+                <option value="">Municipio</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <select id="cuencaSelect" class="filter-select" aria-label="Filtrar por Cuenca hidrográfica">
+                <option value="">Cuenca</option>
+            </select>
+        </div>
+    </nav>
+
+    <main class="app-layout">
+        <!-- Panel Lateral -->
+        <aside class="side-panel collapsed" id="sidePanel" aria-labelledby="sideTitle">
+            <div class="side-header">
+                <h2 class="side-title" id="sideTitle">Resultados</h2>
+                <button class="side-close" id="sideClose" aria-label="Cerrar panel de resultados">&times;</button>
+            </div>
+            <div class="side-list" id="sideList" role="list"></div>
+        </aside>
+
+        <!-- Panel del Mapa -->
+        <section class="map-panel">
+            <div id="map" role="application" aria-label="Mapa interactivo de fuentes">
+                <div class="layer-switcher" id="layerSwitcher">
+                    <button class="layer-btn active" data-layer="osm">OSM</button>
+                    <button class="layer-btn" data-layer="topo">Topo</button>
+                    <button class="layer-btn" data-layer="cyclo">Ciclo</button>
+                    <button class="layer-btn" data-layer="sat">Satélite</button>
+                    <span class="layer-sep" aria-hidden="true"></span>
+                    <button class="layer-btn" id="gpsBtn" title="Centrar en mi ubicación">🎯</button>
+                    <button class="layer-btn" id="downloadTilesBtn" title="Descargar zona offline">💾 Descargar Mapa</button>
+                    <button class="layer-btn" id="dwBtn" title="Mostrar fuentes de agua potable (OSM)">🚰</button>
+                    <span class="layer-sep" aria-hidden="true"></span>
+                    <button class="layer-btn zoom-btn" id="zoomIn" aria-label="Aumentar zoom">+</button>
+                    <button class="layer-btn zoom-btn" id="zoomOut" aria-label="Disminuir zoom">−</button>
+                </div>
+            </div>
+            <div class="map-info">
+                <p>Haz clic en un marcador para ver detalles</p>
+                <p id="active-card-name" aria-live="polite"></p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modales y Diálogos -->
+    <div id="modal" class="modal" role="dialog" aria-modal="true" hidden>
+        <div class="modal-content">
+            <button class="close-btn" aria-label="Cerrar modal">&times;</button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <div id="fullscreen-photo" class="fullscreen-photo" onclick="this.classList.remove('show')" role="button" aria-label="Cerrar imagen">
+        <img src="" alt="Vista ampliada de la fuente" id="fs-img">
+    </div>
+
+    <!-- Banner de Cookies -->
+    <div id="cookie-banner" role="alert" aria-live="assertive">
+        <div class="cb-content">
+            <div class="cb-text">🍪 Esta web utiliza <strong>almacenamiento local</strong> para guardar preferencias. No recopilamos ni compartimos datos personales.</div>
+            <div class="cb-btns">
+                <button id="cb-accept" class="btn btn-accent">Aceptar</button>
+                <button id="cb-info" class="btn btn-sec">Más info</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Legal -->
+    <div id="legal-modal" role="dialog" aria-modal="true" hidden>
+        <div class="modal-content" style="position:relative">
+            <button class="modal-close" aria-label="Cerrar información legal">&times;</button>
+            <h2>Información Legal</h2>
+            <div id="legal-body"></div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <footer class="legal-links">
+        <a href="#" id="link-legal">Aviso Legal</a> ·
+        <a href="#" id="link-privacy">Privacidad</a> ·
+        <a href="#" id="link-cookies">Cookies</a>
+    </footer>
+
+    <div id="footer-credit">
+        Idea original de Luciano CJ ❤️ 
+        <span class="credit-quote">"no me copies sino es para mejorarme"</span>
+    </div>
+
+    <!-- Scripts cargados al final para optimizar el renderizado -->
+    <script src="lib/leaflet.js"></script>
+    <script src="lib/leaflet.markercluster.js"></script>
+    <script src="photo_counts.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

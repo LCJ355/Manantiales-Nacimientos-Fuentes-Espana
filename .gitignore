@@ -1,0 +1,19 @@
+# Dependencias de Node
+node_modules/
+
+# Archivos de base de datos grandes (exceden el límite de 100MB de GitHub)
+fuentes_espana.json
+fuentes_espana.js
+
+# Fotos locales (privacidad y tamaño)
+images/*.jpg
+images/*_temp*
+
+# Archivos comprimidos y respaldos
+*.zip
+*_old.zip
+
+# Configuraciones del sistema operativo
+.DS_Store
+Thumbs.db
+*.local
