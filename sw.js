@@ -1,4 +1,4 @@
-const CACHE = 'fuentes-v21';
+const CACHE = 'fuentes-v22';
 const URLS = [
   'index.html', 'style.css', 'main.js',
   'manifest.json', 'lib/leaflet.js', 'lib/leaflet.css',

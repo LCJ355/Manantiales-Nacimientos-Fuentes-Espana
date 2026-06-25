@@ -74,6 +74,7 @@ function renumberPhotos(id) {
 app.use(express.static(__dirname, {
   setHeaders: (res, filePath) => {
     if (filePath.endsWith('.js')) res.setHeader('Content-Type', 'application/javascript');
+    if (filePath.endsWith('.json')) res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   }
 }));
 
